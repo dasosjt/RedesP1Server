@@ -1,0 +1,23 @@
+{
+  "engines": {
+    "node": "8.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js",
+    "final": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^0.17.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.1",
+    "immutable": "^3.8.2",
+    "jsonwebtoken": "^8.1.0",
+    "path": "^0.12.7",
+    "sequelize": "^4.28.6",
+    "socket.io": "^2.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.14.11"
+  }
+}
