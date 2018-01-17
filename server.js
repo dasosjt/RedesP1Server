@@ -23,12 +23,13 @@ var options2 = {
 
 
 let port = process.env.PORT || 8080
+let ip_addr = process.env.IP_ADDR || '0.0.0.0'
 
 let globalState = immutable.fromJS({
   clients: []
 })
 
-server.listen(port)
+server.listen(port, ip_addr)
 console.log('Server listening on port', port)
 
 
