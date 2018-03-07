@@ -20,34 +20,41 @@ var options2 = {
   max:800,
   integer: true
 }
+var options3 = {
+  min:-10,
+  max:-5,
+  integer: true
+}
 
-
+let food_l = {}
 let port = process.env.PORT || 8080
-let ip_addr = process.env.IP_ADDR || '0.0.0.0'
 
 let globalState = immutable.fromJS({
-  clients: []
+  clients: [],
+  comida : []
 })
 
-server.listen(port, ip_addr)
+server.listen(port)
 console.log('Server listening on port', port)
 
 
 
-io.on('connection', client => {
+io.on('connection', (client) => {
   client.on('subscribeToState', interval => {
     /*console.log('client', client.id,'is subscribing to state with interval', interval)*/
     
     let updatedClients = globalState.get('clients').push(immutable.fromJS({ id: client.id, position: { x: rn(options2), y: rn(options1) }, color: randomColor(), score: 0 }))
     globalState = globalState.set('clients', updatedClients)
-        
-    setInterval(() => { client.emit('state', globalState) }, interval)
-    
-    //console.log(updatedClients)
-    
+    let rand = []
+    for(let i = 0;i<100;i++){
+      let updateComida = globalState.get('comida').push(immutable.fromJS({x:rn(options2),y: rn(options1), color: randomColor()}))
+      globalState = globalState.set('comida', updateComida)
+    }
+    let updateComida = globalState.get('comida').push(immutable.fromJS(rand))
+    globalState = globalState.set('comida', updateComida)
 
-    
-    
+    setInterval(() => { client.emit('state', globalState) }, interval)
+    //console.log(updateComida)
   })
 
   client.on('emitPositionChange', change => {
@@ -60,6 +67,7 @@ io.on('connection', client => {
     globalState = globalState.set('clients', updatedClients) 
 
     colisionClient()
+
     //console.log(updatedClients)
     client.emit('state', globalState) 
 
@@ -67,11 +75,44 @@ io.on('connection', client => {
 
   })
 
-  client.on('emitColision', toAddScore => {
+  client.on('emitColision', (toAddScore) => {
+
     let updatedClients = globalState.get('clients').map( c => c.get('id') === client.id ?
       immutable.fromJS({ id: client.id, position: c.get('position'), color: c.get('color'), score: c.get('score') + toAddScore }) : c)
+    let updatedComida = globalState.get('comida').map( c => c.get('color') ?
+      immutable.fromJS({x: c.get('x'),y: c.get('y'), color: c.get('color')}): c)
+    let cor = []
 
-    globalState = globalState.set('clients', updatedClients) 
+    //console.log(updatedComida.get(0))
+    for(let h = 0;h<updatedComida.size;h++){
+      //console.log(updatedComida.get(h))
+      let comida = updatedComida.get(h)
+      let x = comida.get('x')
+      let y = comida.get('y')
+      cor.push((x,y))
+      //console.log(x,y)
+    }
+    console.log(updatedClients.get(updatedClients.size -1))
+    let last_client = updatedClients.get(updatedClients.size -1)
+    console.log(last_client.get('position'))
+    let x = last_client.get('x')
+    let y = last_client.get('y')
+    let col = cor.includes((x,y))
+
+    if (col == true){
+      console.log(cor.includes((x,y)))
+      let indx = cor.indexOf(col)
+
+    }
+    
+    // console.log(cor)
+     
+    //if (food.food_cor.includes(x,y)){
+      //  console.log(food.food_cor.includes(x,y))
+       // array.splice(updateComida, x);
+      //}
+   
+   
 
     client.emit('state', globalState)
   })
