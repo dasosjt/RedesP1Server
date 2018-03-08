@@ -87,5 +87,5 @@ io.on('connection', (client) => {
   })
 })
 
-server.listen(port, '127.0.0.1')
+server.listen(port, '0.0.0.0')
 console.log('Server listening on port', port)
